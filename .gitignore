@@ -21,3 +21,4 @@ server/src/data/*.xls
 
 # Env files
 .env
+"node_modules" 
