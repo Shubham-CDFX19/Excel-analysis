@@ -5,7 +5,8 @@ import * as XLSX from "xlsx";
 const app = express();
 app.use(cors());
 
-const workbook = XLSX.readFile("./server/src/data/Intern test - IN funda data ann.xls");
+// Update the Excel file path for Vercel serverless compatibility
+const workbook = XLSX.readFile("./api/data/Intern test - IN funda data ann.xls");
 const sheetName = workbook.SheetNames[0];
 const sheet = workbook.Sheets[sheetName];
 const jsonData = XLSX.utils.sheet_to_json(sheet);
