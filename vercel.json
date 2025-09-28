@@ -1,12 +1,4 @@
 {
-  "version": 2,
-  "functions": {
-    "api/index.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "env": {
-    "NODE_ENV": "production"
-  }
+  "version": 2
 }
 
