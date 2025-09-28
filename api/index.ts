@@ -1,28 +1,31 @@
 import express from "express";
 import cors from "cors";
 import * as XLSX from "xlsx";
+import path from "path";
 
 const app = express();
 app.use(cors());
 
-// Update the Excel file path for Vercel serverless compatibility
-const workbook = XLSX.readFile("./api/data/Intern test - IN funda data ann.xls");
-const sheetName = workbook.SheetNames[0];
-const sheet = workbook.Sheets[sheetName];
-const jsonData = XLSX.utils.sheet_to_json(sheet);
+// Use path.resolve for serverless compatibility
+const excelPath = path.resolve(__dirname, "data", "Intern test - IN funda data ann.xls");
 
-console.log("Parsed Excel data (first 3 rows):", jsonData.slice(0, 3));
+let jsonData: any[] = [];
+let companies: string[] = [];
+let metrics: string[] = [];
 
-function getCompanyColumn(row: any): string | undefined {
-  const possibleNames = ["Company", "company", "COMPANY", "Name", "Firm"];
-  for (const key of Object.keys(row)) {
-    if (possibleNames.includes(key)) return key;
-  }
-  return undefined;
+try {
+  const workbook = XLSX.readFile(excelPath);
+  const sheetName = workbook.SheetNames[0];
+  const sheet = workbook.Sheets[sheetName];
+  jsonData = XLSX.utils.sheet_to_json(sheet);
+
+  companies = Array.from(new Set(jsonData.map((row: any) => row["Company name"]))).filter(Boolean);
+  metrics = Array.from(new Set(jsonData.map((row: any) => row.Field))).filter(Boolean);
+
+  console.log("Parsed Excel data (first 3 rows):", jsonData.slice(0, 3));
+} catch (error) {
+  console.error("Error reading Excel file:", error);
 }
-
-const companies = Array.from(new Set(jsonData.map((row: any) => row["Company name"]))).filter(Boolean);
-const metrics = Array.from(new Set(jsonData.map((row: any) => row.Field))).filter(Boolean);
 
 app.get("/api/companies", (_, res) => {
   res.json(companies);
