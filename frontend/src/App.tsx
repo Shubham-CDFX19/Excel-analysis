@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { CompanySelector } from "@/components/CompanySelector";
 import { ChartDisplay } from "@/components/ChartDisplay";
+import MetricChart from "./components/MetricChart";
+
 import { DataTable } from "@/components/DataTable";
 import { CompanyData } from "@/utils/dataParser";
 
@@ -59,9 +61,9 @@ export default function App() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col gap-8 p-8">
         {(viewMode === "chart" || viewMode === "both") && (
-          <section className="bg-white rounded-xl shadow-lg p-6">
-            <ChartDisplay companies={selectedCompanies} metric={selectedMetric} />
-          </section>
+            <section className="bg-white rounded-xl shadow-lg p-6">
+              <ChartDisplay companies={selectedCompanies} metric={selectedMetric} />
+            </section>
         )}
         {(viewMode === "table" || viewMode === "both") && (
           <section className="bg-white rounded-xl shadow-lg p-6">

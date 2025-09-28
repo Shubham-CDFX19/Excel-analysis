@@ -22,6 +22,13 @@ export function ChartDisplay({ companies, metric }: ChartDisplayProps) {
     return entry;
   });
 
+    // Assign a color for each company (stable across renders)
+    const companyColors: Record<string, string> = {};
+    companies.forEach((c, i) => {
+      // Use a fixed palette or generate color
+      const palette = ["#2563eb", "#eab308", "#10b981", "#ef4444", "#a21caf", "#f59e42", "#14b8a6", "#f43f5e"];
+      companyColors[c.ticker] = palette[i % palette.length];
+    });
   const handleExport = () => {
     const ws = XLSX.utils.json_to_sheet(allData);
     const wb = XLSX.utils.book_new();
@@ -40,6 +47,15 @@ export function ChartDisplay({ companies, metric }: ChartDisplayProps) {
           Export to Excel
         </button>
       </div>
+        {/* Color indication box for each company */}
+        <div className="flex flex-wrap gap-4 mb-4">
+          {companies.map(c => (
+            <div key={c.ticker} className="flex items-center gap-2">
+              <span style={{background: companyColors[c.ticker], width: 20, height: 20, borderRadius: 4, display: 'inline-block', border: '2px solid #e5e7eb'}}></span>
+              <span className="font-semibold text-gray-700">{c.name} ({c.ticker})</span>
+            </div>
+          ))}
+        </div>
       <div className="bg-white rounded-xl shadow-lg p-6">
         <ResponsiveContainer width="100%" height={350}>
           <LineChart data={allData}>
@@ -52,7 +68,7 @@ export function ChartDisplay({ companies, metric }: ChartDisplayProps) {
                 key={c.ticker}
                 type="monotone"
                 dataKey={c.ticker}
-                stroke={`#${Math.floor(Math.random() * 16777215).toString(16)}`}
+                  stroke={companyColors[c.ticker]}
                 strokeWidth={3}
                 dot={{ r: 5 }}
                 activeDot={{ r: 7 }}
